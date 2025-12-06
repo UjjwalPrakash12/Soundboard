@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Soundboard</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing: border-box;
+        }
+
+        body{
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container{
+            background: rgba(255,255,255,0.98);
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 0 25px 70px rgba(0,0,0,0.4);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1{
+            text-align: center;
+            background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .subtitle{
+            text-align: center;
+            color: #555;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+        }
+
+        .soundboard{
+            display: grid;
+            grid-template-columns: repeat(3,1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .sound-btn{
+            background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+            border: none;
+            border-radius: 18px;
+            padding: 30px 20px;
+            color: white;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(102,126,234,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sound-btn:nth-child(1){
+            background: linear-gradient(135deg,#a8edea 0%,#fed6e3 100%);
+            color: #333;
+        }
+        .sound-btn:nth-child(2){
+            background: linear-gradient(135deg,#a8edea 0%,#fed6e3 100%);
+            color: #333;
+        }
+        .sound-btn:nth-child(3){
+            background: linear-gradient(135deg,#a8edea 0%,#fed6e3 100%);
+            color: #333;
+        }
+        .sound-btn:nth-child(4){
+            background: linear-gradient(135deg,#a8edea 0%,#fed6e3 100%);
+            color: #333;
+        }
+        .sound-btn:nth-child(5){
+            background: linear-gradient(135deg,#a8edea 0%,#fed6e3 100%);
+            color: #333;
+        }
+        .sound-btn:nth-child(6) {
+            background: linear-gradient(135deg,#a8edea 0%,#fed6e3 100%);
+            color: #333;
+        }
+        .sound-btn:nth-child(7) {
+            background: linear-gradient(135deg,#a8edea 0%,#fed6e3 100%);
+            color: #333;
+        }
+        .sound-btn:nth-child(8){
+            background: linear-gradient(135deg,#a8edea 0%,#fed6e3 100%);
+            color: #333;
+        }
+        .sound-btn:nth-child(9){
+            background: linear-gradient(135deg,#a8edea 0%,#fed6e3 100%);
+            color: #333;
+        }
+
+        .sound-btn:hover{
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 12px 30px rgba(102,126,234,0.5);
+        }
+
+        .sound-btn:active{
+            transform: translateY(-2px) scale(0.98);
+            box-shadow: 0 5px 15px rgba(102,126,234,0.4);
+        }
+
+        .sound-btn.playing{
+            animation: pulse 0.3s ease;
+        }
+
+        @keyframes pulse{
+            0%,100%{ 
+                transform: scale(1); 
+            }
+            50%{ 
+                transform: scale(0.92); 
+            }
+        }
+
+        .controls{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+            background: linear-gradient(135deg,rgba(102,126,234,0.08),rgba(118,75,162,0.08));
+            border-radius: 15px;
+            border: 2px solid rgba(102,126,234,0.1);
+        }
+
+        .volume-control{
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            max-width: 300px;
+        }
+
+        .volume-control label {
+            background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: bold;
+            min-width: 70px;
+        }
+
+        .volume-control input[type="range"] {
+            flex: 1;
+            height: 8px;
+            border-radius: 10px;
+            background: linear-gradient(90deg,#e0e0e0 0%,#667eea 100%);
+            outline: none;
+        }
+
+        .volume-control input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(102,126,234,0.4);
+        }
+
+        .volume-control input[type="range"]::-moz-range-thumb {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 3px 10px rgba(102,126,234,0.4);
+        }
+
+        .keyboard-hint {
+            text-align: center;
+            color: #888;
+            font-size: 0.85em;
+            margin-top: 20px;
+        }
+
+        .extra-controls{
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .control-group{
+            background: linear-gradient(135deg,rgba(102,126,234,0.08),rgba(118,75,162,0.08));
+            padding: 15px;
+            border-radius: 12px;
+            border: 2px solid rgba(102,126,234,0.1);
+        }
+
+        .control-group label{
+            display: block;
+            background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: bold;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+        }
+
+        .waveform-btns{
+            display: flex;
+            gap: 5px;
+        }
+
+        .wave-btn{
+            flex: 1;
+            padding: 8px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: all 0.2s;
+            color: #666;
+        }
+
+        .wave-btn:hover{
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .wave-btn.active{
+            background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .control-group input[type="range"]{
+            width: 100%;
+            height: 6px;
+            border-radius: 10px;
+            background: linear-gradient(90deg,#e0e0e0 0%,#667eea 100%);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .control-group input[type="range"]::-webkit-slider-thumb{
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(102,126,234,0.4);
+        }
+
+        .control-group input[type="range"]::-moz-range-thumb{
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 8px rgba(102,126,234,0.4);
+        }
+
+        .record-section{
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .record-controls{
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .record-btn{
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9em;
+        }
+
+        .record-btn.record{
+            background: linear-gradient(135deg,#f093fb 0%,#f5576c 100%);
+            color: white;
+        }
+
+        .record-btn.stop{
+            background: linear-gradient(135deg,#ff6b6b 0%,#ee5a6f 100%);
+            color: white;
+        }
+
+        .record-btn.play{
+            background: linear-gradient(135deg,#43e97b 0%,#38f9d7 100%);
+            color: white;
+        }
+
+        .record-btn.clear{
+            background: #e0e0e0;
+            color: #666;
+        }
+
+        .record-btn:hover{
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .record-btn:disabled{
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .recording-indicator{
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background: #f5576c;
+            border-radius: 50%;
+            margin-left: 8px;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink{
+            0%,100%{opacity:1;}
+            50%{opacity:0.3;}
+        }
+
+        .status-text{
+            color: #888;
+            font-size: 0.85em;
+            margin-top: 8px;
+        }
+
+        .key-label {
+            display: block;
+            font-size: 0.7em;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎵 Soundboard</h1>
+        <p class="subtitle">Click buttons or use keyboard shortcuts!</p>
+        
+        <div class="record-section">
+            <div class="record-controls">
+                <button class="record-btn record" id="recordBtn">● Record</button>
+                <button class="record-btn stop" id="stopBtn" disabled>■ Stop</button>
+                <button class="record-btn play" id="playBtn" disabled>▶ Play Back</button>
+                <button class="record-btn clear" id="clearBtn" disabled>✕ Clear</button>
+            </div>
+            <div class="status-text" id="statusText">Press Record to capture your sequence</div>
+        </div>
+
+        <div class="extra-controls">
+            <div class="control-group">
+                <label>Waveform Type</label>
+                <div class="waveform-btns">
+                    <button class="wave-btn active" data-wave="sine">Sine</button>
+                    <button class="wave-btn" data-wave="square">Square</button>
+                    <button class="wave-btn" data-wave="sawtooth">Saw</button>
+                    <button class="wave-btn" data-wave="triangle">Triangle</button>
+                </div>
+            </div>
+            <div class="control-group">
+                <label>Sound Duration: <span id="durationValue">0.2s</span></label>
+                <input type="range" id="durationSlider" min="50" max="1000" value="200" step="50">
+            </div>
+        </div>
+        
+        <div class="soundboard" id="soundboard">
+            <button class="sound-btn" data-note="C" data-freq="261.63">
+                Kick
+                <span class="key-label">[1]</span>
+            </button>
+            <button class="sound-btn" data-note="D" data-freq="293.66">
+                Snare
+                <span class="key-label">[2]</span>
+            </button>
+            <button class="sound-btn" data-note="E" data-freq="329.63">
+                Hi-Hat
+                <span class="key-label">[3]</span>
+            </button>
+            <button class="sound-btn" data-note="F" data-freq="349.23">
+                Tom
+                <span class="key-label">[4]</span>
+            </button>
+            <button class="sound-btn" data-note="G" data-freq="392.00">
+                Clap
+                <span class="key-label">[5]</span>
+            </button>
+            <button class="sound-btn" data-note="A" data-freq="440.00">
+                Cowbell
+                <span class="key-label">[6]</span>
+            </button>
+            <button class="sound-btn" data-note="B" data-freq="493.88">
+                Cymbal
+                <span class="key-label">[7]</span>
+            </button>
+            <button class="sound-btn" data-note="C2" data-freq="523.25">
+                Beep
+                <span class="key-label">[8]</span>
+            </button>
+            <button class="sound-btn" data-note="D2" data-freq="587.33">
+                Boop
+                <span class="key-label">[9]</span>
+            </button>
+        </div>
+
+        <div class="controls">
+            <div class="volume-control">
+                <label for="volume">Volume:</label>
+                <input type="range" id="volume" min="0" max="100" value="70">
+            </div>
+        </div>
+
+        <p class="keyboard-hint">💡 Use keys 1-9 or click to play sounds</p>
+    </div>
+
+    <script>
+       
+        let audioContext = null;
+        
+        function initAudio(){
+            if(!audioContext){
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                console.log('Audio initialized!');
+            }
+            if(audioContext.state === 'suspended'){
+                audioContext.resume();
+            }
+        }
+        
+        const buttons = document.querySelectorAll('.sound-btn');
+        const volumeSlider = document.getElementById('volume');
+        const durationSlider = document.getElementById('durationSlider');
+        const durationValue = document.getElementById('durationValue');
+        const waveButtons = document.querySelectorAll('.wave-btn');
+        
+        const recordBtn = document.getElementById('recordBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const playBtn = document.getElementById('playBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const statusText = document.getElementById('statusText');
+        
+        let isRecording = false;
+        let recordedSequence = [];
+        let recordingStartTime = 0;
+        
+        let masterVolume = 0.7;
+        let soundDuration = 0.2;
+        let currentWaveform = 'sine';
+        
+        volumeSlider.addEventListener('input',function(e){
+            masterVolume = e.target.value / 100;
+        });
+        
+        durationSlider.addEventListener('input',function(e){
+            soundDuration = e.target.value / 1000;
+            durationValue.textContent = soundDuration.toFixed(2) + 's';
+        });
+        
+        waveButtons.forEach(function(btn){
+            btn.addEventListener('click',function(){
+                initAudio();
+                waveButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentWaveform = btn.dataset.wave;
+            });
+        });
+
+        function playSound(frequency,duration){
+            if(!audioContext){
+                console.error('Audio not ready yet');
+                return;
+            }
+            
+            if(!duration) duration = soundDuration;
+          
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+            
+            osc.frequency.value = frequency;
+            osc.type = currentWaveform;
+            
+            gain.gain.setValueAtTime(masterVolume * 0.8,audioContext.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01,audioContext.currentTime + duration);
+            
+            osc.start(audioContext.currentTime);
+            osc.stop(audioContext.currentTime + duration);
+            
+            console.log(`Playing: ${frequency}Hz ${currentWaveform}`);
+        }
+
+        buttons.forEach(function(button,index){
+            button.addEventListener('click',function(){
+                initAudio();
+                
+                const freq = parseFloat(button.dataset.freq);
+                playSound(freq);
+                
+                if(isRecording){
+                    const elapsed = Date.now() - recordingStartTime;
+                    recordedSequence.push({
+                        frequency: freq,
+                        time: elapsed
+                    });
+                    statusText.textContent = `Recording... (${recordedSequence.length} sounds)`;
+                }
+                
+                button.classList.add('playing');
+                setTimeout(function(){
+                    button.classList.remove('playing');
+                },300);
+            });
+        });
+
+        recordBtn.addEventListener('click',function(){
+            initAudio();
+            isRecording = true;
+            recordedSequence = [];
+            recordingStartTime = Date.now();
+            
+            recordBtn.disabled = true;
+            stopBtn.disabled = false;
+            playBtn.disabled = true;
+            clearBtn.disabled = true;
+            
+            statusText.innerHTML = 'Recording... <span class="recording-indicator"></span>';
+        });
+        
+        stopBtn.addEventListener('click',function(){
+            isRecording = false;
+            
+            recordBtn.disabled = false;
+            stopBtn.disabled = true;
+            playBtn.disabled = recordedSequence.length === 0;
+            clearBtn.disabled = recordedSequence.length === 0;
+            
+            if(recordedSequence.length > 0){
+                statusText.textContent = `Recorded ${recordedSequence.length} sounds! Click Play to hear it back.`;
+            }else{
+                statusText.textContent = 'No sounds recorded. Try again!';
+            }
+        });
+        
+        playBtn.addEventListener('click',function(){
+            initAudio();
+            if(recordedSequence.length === 0) return;
+            
+            playBtn.disabled = true;
+            recordBtn.disabled = true;
+            statusText.textContent = 'Playing back...';
+            
+            recordedSequence.forEach(function(sound){
+                setTimeout(function(){
+                    playSound(sound.frequency);
+                },sound.time);
+            });
+            
+            const lastTime = recordedSequence[recordedSequence.length - 1].time;
+            setTimeout(function(){
+                playBtn.disabled = false;
+                recordBtn.disabled = false;
+                statusText.textContent = 'Playback complete!';
+            },lastTime + 1000);
+        });
+        
+        clearBtn.addEventListener('click',function(){
+            recordedSequence = [];
+            playBtn.disabled = true;
+            clearBtn.disabled = true;
+            statusText.textContent = 'Recording cleared. Press Record to start fresh!';
+        });
+
+        document.addEventListener('keydown',function(e){
+            if(e.key >= '1' && e.key <= '9'){
+                e.preventDefault();
+                initAudio();
+                
+                const keyMap = {
+                    '1':0,'2':1,'3':2,
+                    '4':3,'5':4,'6':5,
+                    '7':6,'8':7,'9':8
+                };
+                
+                const btnIndex = keyMap[e.key];
+                if(btnIndex !== undefined && buttons[btnIndex]){
+                    buttons[btnIndex].click();
+                    console.log(`Key ${e.key} -> button ${btnIndex}`);
+                }
+            }
+        });
+
+        document.addEventListener('click',function(){
+            initAudio();
+        },{once:true});
+        
+        window.addEventListener('load',function(){
+            console.log('Soundboard loaded - click to enable audio');
+        });
+    </script>
+</body>
+</html>
