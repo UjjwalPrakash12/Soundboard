@@ -354,6 +354,152 @@
             opacity: 0.7;
             margin-top: 5px;
         }
+
+        @media (max-width: 768px){
+            .container{
+                padding: 30px 20px;
+            }
+
+            h1{
+                font-size: 2em;
+            }
+
+            .extra-controls{
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .soundboard{
+                gap: 12px;
+            }
+
+            .sound-btn{
+                padding: 25px 15px;
+                font-size: 1em;
+            }
+
+            .record-controls{
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .record-btn{
+                padding: 10px 18px;
+                font-size: 0.85em;
+            }
+
+            .wave-btn{
+                padding: 6px;
+                font-size: 0.8em;
+            }
+        }
+
+        @media (max-width: 480px){
+            body{
+                padding: 15px;
+            }
+
+            .container{
+                padding: 25px 15px;
+                border-radius: 20px;
+            }
+
+            h1{
+                font-size: 1.8em;
+                margin-bottom: 8px;
+            }
+
+            .subtitle{
+                font-size: 0.85em;
+                margin-bottom: 20px;
+            }
+
+            .soundboard{
+                grid-template-columns: repeat(2,1fr);
+                gap: 10px;
+                margin-bottom: 20px;
+            }
+
+            .sound-btn{
+                padding: 20px 10px;
+                font-size: 0.95em;
+                border-radius: 15px;
+            }
+
+            .key-label{
+                font-size: 0.65em;
+            }
+
+            .extra-controls{
+                gap: 10px;
+                margin-bottom: 15px;
+            }
+
+            .control-group{
+                padding: 12px;
+            }
+
+            .control-group label{
+                font-size: 0.85em;
+                margin-bottom: 6px;
+            }
+
+            .wave-btn{
+                padding: 6px 4px;
+                font-size: 0.75em;
+            }
+
+            .record-controls{
+                gap: 6px;
+            }
+
+            .record-btn{
+                padding: 10px 15px;
+                font-size: 0.8em;
+                flex: 1 1 calc(50% - 6px);
+            }
+
+            .controls{
+                padding: 15px;
+            }
+
+            .volume-control{
+                max-width: 100%;
+            }
+
+            .volume-control label{
+                min-width: 60px;
+                font-size: 0.9em;
+            }
+
+            .keyboard-hint{
+                font-size: 0.8em;
+                margin-top: 15px;
+            }
+
+            .status-text{
+                font-size: 0.8em;
+            }
+        }
+
+        @media (max-width: 360px){
+            .soundboard{
+                grid-template-columns: 1fr;
+            }
+
+            .sound-btn{
+                padding: 18px 10px;
+            }
+
+            .record-btn{
+                font-size: 0.75em;
+                padding: 8px 12px;
+            }
+
+            h1{
+                font-size: 1.5em;
+            }
+        }
     </style>
 </head>
 <body>
@@ -437,7 +583,6 @@
     </div>
 
     <script>
-       
         let audioContext = null;
         
         function initAudio(){
@@ -495,7 +640,7 @@
             }
             
             if(!duration) duration = soundDuration;
-          
+            
             const osc = audioContext.createOscillator();
             const gain = audioContext.createGain();
             
